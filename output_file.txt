@@ -1,0 +1,62 @@
+main:
+A = 10
+P = 10
+T = 20
+c = 30
+wet = 20
+y = 1
+t = 80
+y = 81
+y = 90
+y = 7200
+y = 81
+pt = 80
+i = 0
+L1:
+ifFalse i<10 goto L2
+r11 = A + 20 
+A = r11
+i = i + 1 
+goto L1
+L2:
+x = 1
+L3:
+ifFalse x<10 goto L4
+r13 = 10 + T 
+r14 = r13 + A 
+T = r14
+j = 5
+L5:
+ifFalse j<25 goto L6
+y = 0
+j = j + 1 
+goto L5
+L6:
+x = x + 1 
+goto L3
+L4:
+y = 0
+g = 0
+r16 =  true  
+ifFalse r16 goto L9
+u = 0
+r17 =  False  
+ifFalse r17 goto L10
+r18 = y + 9 
+y = r18
+L10:
+f = 1000
+L9:
+r19 = A >= 0 
+r20 = p < 10 
+r21 = r19 and r20 
+r22 = c < 25 
+r23 = r21 and r22 
+ifFalse r23 goto L11
+A = 20
+goto L12
+L11:
+ty = 0
+L12:
+
+

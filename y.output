@@ -1,0 +1,2426 @@
+Terminals unused in grammar
+
+   T_REL_OP
+   T_LOGIC
+   T_KEY
+   T_LIST_OP
+   T_space
+   '-'
+   '%'
+
+
+Grammar
+
+    0 $accept: PHASE_START $end
+
+    1 $@1: %empty
+
+    2 PHASE_START: $@1 START
+
+    3 START: ASSIGN NEWLINE START
+    4      | FOR_STMT START
+    5      | IF_STMT START
+    6      | SIMPLE_STMT NEWLINE START
+    7      | error
+
+    8 $@2: %empty
+
+    9 START: NEWLINE $@2 START
+   10      | %empty
+
+   11 $@3: %empty
+
+   12 START_FOR_INDENT: INDENT_GRAMMER ASSIGN NEWLINE $@3 START_FOR_INDENT
+
+   13 $@4: %empty
+
+   14 START_FOR_INDENT: INDENT_GRAMMER FOR_STMT NEWLINE $@4 START_FOR_INDENT
+
+   15 $@5: %empty
+
+   16 START_FOR_INDENT: INDENT_GRAMMER INNER_IF NEWLINE $@5 START_FOR_INDENT
+
+   17 $@6: %empty
+
+   18 START_FOR_INDENT: INDENT_GRAMMER SIMPLE_STMT NEWLINE $@6 START_FOR_INDENT
+   19                 | %empty
+
+   20 $@7: %empty
+
+   21 INTERMEDIATE: INDENT_GRAMMER ASSIGN NEWLINE $@7 START_FOR_INDENT
+
+   22 $@8: %empty
+
+   23 INTERMEDIATE: INDENT_GRAMMER FOR_STMT NEWLINE $@8 START_FOR_INDENT
+
+   24 $@9: %empty
+
+   25 INTERMEDIATE: INDENT_GRAMMER INNER_IF NEWLINE $@9 START_FOR_INDENT
+
+   26 $@10: %empty
+
+   27 INTERMEDIATE: INDENT_GRAMMER SIMPLE_STMT NEWLINE $@10 START_FOR_INDENT
+
+   28 $@11: %empty
+
+   29 INDENT_GRAMMER: T_INDENT $@11 GOP
+
+   30 $@12: %empty
+
+   31 GOP: T_INDENT $@12 GOP
+   32    | %empty
+
+   33 SIMPLE_STMT: T_INT '(' A ')'
+   34            | T_LIST '(' B ')'
+   35            | T_LIST '(' A ')'
+   36            | T_PRINT '(' UI ')'
+   37            | A
+   38            | B
+
+   39 A: T_INPUT '(' GI ')'
+
+   40 B: T_INPUT '(' GI ')' '.' T_SPLIT '(' ')'
+
+   41 UI: M
+   42   | %empty
+
+   43 GI: T_STRING
+   44   | %empty
+
+   45 ASSIGN: T_ID T_ASSIGN E
+   46       | T_ID T_ASSIGN SIMPLE_STMT
+
+   47 E: E '+' T
+   48  | E T_minus T
+   49  | T
+
+   50 T: T '*' F
+   51  | T '/' F
+   52  | F
+
+   53 F: Q T_star F
+   54  | Q
+
+   55 Q: L
+   56  | '(' E ')'
+   57  | VAR
+
+   58 VAR: T_ID
+   59    | T_DIGIT
+   60    | T_STRING
+
+   61 L: '[' M ']'
+   62  | '[' ']'
+
+   63 M: Q ',' M
+   64  | Q
+
+   65 REL_OP: T_LT
+   66       | T_GT
+   67       | T_GE
+   68       | T_LE
+   69       | LIST_OP
+
+   70 LIST_OP: T_EEQ
+   71        | T_NEQ
+
+   72 COND: COND T_OR AND_STMT
+   73     | AND_STMT
+
+   74 AND_STMT: AND_STMT T_AND NOT_STMT
+   75         | NOT_STMT
+
+   76 NOT_STMT: T_NOT NOT_STMT
+   77         | N
+
+   78 N: '(' COND ')'
+   79  | REL_EXP
+   80  | T_TRUE
+   81  | T_FALSE
+
+   82 REL_EXP: VAR REL_OP VAR
+   83        | L LIST_OP L
+   84        | VAR LIST_OP L
+   85        | L LIST_OP VAR
+
+   86 $@13: %empty
+
+   87 INNER_SUITE: $@13 INTERMEDIATE
+
+   88 $@14: %empty
+
+   89 $@15: %empty
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' ':' NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+   91 $@16: %empty
+
+   92 SUITE: NEWLINE $@16 INTERMEDIATE
+
+   93 $@17: %empty
+
+   94 $@18: %empty
+
+   95 IF_STMT: T_IF $@17 '(' COND ')' ':' SUITE $@18 ELIF_STMT
+
+   96 $@19: %empty
+
+   97 $@20: %empty
+
+   98 ELIF_STMT: T_ELIF $@19 '(' COND ')' ':' SUITE $@20 ELIF_STMT
+
+   99 $@21: %empty
+
+  100 ELIF_STMT: T_ELSE $@21 ':' SUITE
+  101          | %empty
+
+  102 $@22: %empty
+
+  103 $@23: %empty
+
+  104 FOR_STMT: T_FOR $@22 T_ID T_IN TARGET $@23 ':' SUITE
+
+  105 TARGET: T_RANGE '(' C ')'
+  106       | T_RANGE '(' C ',' C ')'
+  107       | T_RANGE '(' C ',' C ',' C ')'
+  108       | T_ID
+  109       | L
+
+  110 C: T_ID
+  111  | T_DIGIT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37)
+'(' (40) 33 34 35 36 39 40 56 78 90 95 98 105 106 107
+')' (41) 33 34 35 36 39 40 56 78 90 95 98 105 106 107
+'*' (42) 50
+'+' (43) 47
+',' (44) 63 106 107
+'-' (45)
+'.' (46) 40
+'/' (47) 51
+':' (58) 90 95 98 100 104
+'[' (91) 61 62
+']' (93) 61 62
+error (256) 7
+T_ASSIGN (258) 45 46
+T_REL_OP (259)
+T_LOGIC (260)
+T_KEY (261)
+T_ID (262) 45 46 58 104 108 110
+T_STRING (263) 43 60
+T_DIGIT (264) 59 111
+T_IF (265) 90 95
+T_FOR (266) 104
+T_INT (267) 33
+T_SPLIT (268) 40
+T_LIST (269) 34 35
+T_INPUT (270) 39 40
+T_RANGE (271) 105 106 107
+T_PRINT (272) 36
+T_ELSE (273) 100
+T_ELIF (274) 98
+T_TRUE (275) 80
+T_FALSE (276) 81
+T_AND (277) 74
+T_OR (278) 72
+T_NOT (279) 76
+T_LIST_OP (280)
+T_IN (281) 104
+T_star (282) 53
+T_minus (283) 48
+T_LT (284) 65
+T_GT (285) 66
+T_GE (286) 67
+T_LE (287) 68
+T_EEQ (288) 70
+T_NEQ (289) 71
+NEWLINE (290) 3 6 9 12 14 16 18 21 23 25 27 90 92
+T_INDENT (291) 29 31
+T_space (292)
+
+
+Nonterminals, with rules where they appear
+
+$accept (50)
+    on left: 0
+PHASE_START (51)
+    on left: 2, on right: 0
+$@1 (52)
+    on left: 1, on right: 2
+START (53)
+    on left: 3 4 5 6 7 9 10, on right: 2 3 4 5 6 9
+$@2 (54)
+    on left: 8, on right: 9
+START_FOR_INDENT (55)
+    on left: 12 14 16 18 19, on right: 12 14 16 18 21 23 25 27
+$@3 (56)
+    on left: 11, on right: 12
+$@4 (57)
+    on left: 13, on right: 14
+$@5 (58)
+    on left: 15, on right: 16
+$@6 (59)
+    on left: 17, on right: 18
+INTERMEDIATE (60)
+    on left: 21 23 25 27, on right: 87 92
+$@7 (61)
+    on left: 20, on right: 21
+$@8 (62)
+    on left: 22, on right: 23
+$@9 (63)
+    on left: 24, on right: 25
+$@10 (64)
+    on left: 26, on right: 27
+INDENT_GRAMMER (65)
+    on left: 29, on right: 12 14 16 18 21 23 25 27
+$@11 (66)
+    on left: 28, on right: 29
+GOP (67)
+    on left: 31 32, on right: 29 31
+$@12 (68)
+    on left: 30, on right: 31
+SIMPLE_STMT (69)
+    on left: 33 34 35 36 37 38, on right: 6 18 27 46
+A (70)
+    on left: 39, on right: 33 35 37
+B (71)
+    on left: 40, on right: 34 38
+UI (72)
+    on left: 41 42, on right: 36
+GI (73)
+    on left: 43 44, on right: 39 40
+ASSIGN (74)
+    on left: 45 46, on right: 3 12 21
+E (75)
+    on left: 47 48 49, on right: 45 47 48 56
+T (76)
+    on left: 50 51 52, on right: 47 48 49 50 51
+F (77)
+    on left: 53 54, on right: 50 51 52 53
+Q (78)
+    on left: 55 56 57, on right: 53 54 63 64
+VAR (79)
+    on left: 58 59 60, on right: 57 82 84 85
+L (80)
+    on left: 61 62, on right: 55 83 84 85 109
+M (81)
+    on left: 63 64, on right: 41 61 63
+REL_OP (82)
+    on left: 65 66 67 68 69, on right: 82
+LIST_OP (83)
+    on left: 70 71, on right: 69 83 84 85
+COND (84)
+    on left: 72 73, on right: 72 78 90 95 98
+AND_STMT (85)
+    on left: 74 75, on right: 72 73 74
+NOT_STMT (86)
+    on left: 76 77, on right: 74 75 76
+N (87)
+    on left: 78 79 80 81, on right: 77
+REL_EXP (88)
+    on left: 82 83 84 85, on right: 79
+INNER_SUITE (89)
+    on left: 87, on right: 90
+$@13 (90)
+    on left: 86, on right: 87
+INNER_IF (91)
+    on left: 90, on right: 16 25
+$@14 (92)
+    on left: 88, on right: 90
+$@15 (93)
+    on left: 89, on right: 90
+SUITE (94)
+    on left: 92, on right: 95 98 100 104
+$@16 (95)
+    on left: 91, on right: 92
+IF_STMT (96)
+    on left: 95, on right: 5
+$@17 (97)
+    on left: 93, on right: 95
+$@18 (98)
+    on left: 94, on right: 95
+ELIF_STMT (99)
+    on left: 98 100 101, on right: 90 95 98
+$@19 (100)
+    on left: 96, on right: 98
+$@20 (101)
+    on left: 97, on right: 98
+$@21 (102)
+    on left: 99, on right: 100
+FOR_STMT (103)
+    on left: 104, on right: 4 14 23
+$@22 (104)
+    on left: 102, on right: 104
+$@23 (105)
+    on left: 103, on right: 104
+TARGET (106)
+    on left: 105 106 107 108 109, on right: 104
+C (107)
+    on left: 110 111, on right: 105 106 107
+
+
+State 0
+
+    0 $accept: . PHASE_START $end
+
+    $default  reduce using rule 1 ($@1)
+
+    PHASE_START  go to state 1
+    $@1          go to state 2
+
+
+State 1
+
+    0 $accept: PHASE_START . $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    2 PHASE_START: $@1 . START
+
+    error    shift, and go to state 4
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 6
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+    NEWLINE  shift, and go to state 12
+
+    $end  reduce using rule 10 (START)
+
+    START        go to state 13
+    SIMPLE_STMT  go to state 14
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 17
+    IF_STMT      go to state 18
+    FOR_STMT     go to state 19
+
+
+State 3
+
+    0 $accept: PHASE_START $end .
+
+    $default  accept
+
+
+State 4
+
+    7 START: error .
+
+    $default  reduce using rule 7 (START)
+
+
+State 5
+
+   45 ASSIGN: T_ID . T_ASSIGN E
+   46       | T_ID . T_ASSIGN SIMPLE_STMT
+
+    T_ASSIGN  shift, and go to state 20
+
+
+State 6
+
+   95 IF_STMT: T_IF . $@17 '(' COND ')' ':' SUITE $@18 ELIF_STMT
+
+    $default  reduce using rule 93 ($@17)
+
+    $@17  go to state 21
+
+
+State 7
+
+  104 FOR_STMT: T_FOR . $@22 T_ID T_IN TARGET $@23 ':' SUITE
+
+    $default  reduce using rule 102 ($@22)
+
+    $@22  go to state 22
+
+
+State 8
+
+   33 SIMPLE_STMT: T_INT . '(' A ')'
+
+    '('  shift, and go to state 23
+
+
+State 9
+
+   34 SIMPLE_STMT: T_LIST . '(' B ')'
+   35            | T_LIST . '(' A ')'
+
+    '('  shift, and go to state 24
+
+
+State 10
+
+   39 A: T_INPUT . '(' GI ')'
+   40 B: T_INPUT . '(' GI ')' '.' T_SPLIT '(' ')'
+
+    '('  shift, and go to state 25
+
+
+State 11
+
+   36 SIMPLE_STMT: T_PRINT . '(' UI ')'
+
+    '('  shift, and go to state 26
+
+
+State 12
+
+    9 START: NEWLINE . $@2 START
+
+    $default  reduce using rule 8 ($@2)
+
+    $@2  go to state 27
+
+
+State 13
+
+    2 PHASE_START: $@1 START .
+
+    $default  reduce using rule 2 (PHASE_START)
+
+
+State 14
+
+    6 START: SIMPLE_STMT . NEWLINE START
+
+    NEWLINE  shift, and go to state 28
+
+
+State 15
+
+   37 SIMPLE_STMT: A .
+
+    $default  reduce using rule 37 (SIMPLE_STMT)
+
+
+State 16
+
+   38 SIMPLE_STMT: B .
+
+    $default  reduce using rule 38 (SIMPLE_STMT)
+
+
+State 17
+
+    3 START: ASSIGN . NEWLINE START
+
+    NEWLINE  shift, and go to state 29
+
+
+State 18
+
+    5 START: IF_STMT . START
+
+    error    shift, and go to state 4
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 6
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+    NEWLINE  shift, and go to state 12
+
+    $end  reduce using rule 10 (START)
+
+    START        go to state 30
+    SIMPLE_STMT  go to state 14
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 17
+    IF_STMT      go to state 18
+    FOR_STMT     go to state 19
+
+
+State 19
+
+    4 START: FOR_STMT . START
+
+    error    shift, and go to state 4
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 6
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+    NEWLINE  shift, and go to state 12
+
+    $end  reduce using rule 10 (START)
+
+    START        go to state 31
+    SIMPLE_STMT  go to state 14
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 17
+    IF_STMT      go to state 18
+    FOR_STMT     go to state 19
+
+
+State 20
+
+   45 ASSIGN: T_ID T_ASSIGN . E
+   46       | T_ID T_ASSIGN . SIMPLE_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_INT     shift, and go to state 8
+    T_LIST    shift, and go to state 9
+    T_INPUT   shift, and go to state 10
+    T_PRINT   shift, and go to state 11
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    SIMPLE_STMT  go to state 37
+    A            go to state 15
+    B            go to state 16
+    E            go to state 38
+    T            go to state 39
+    F            go to state 40
+    Q            go to state 41
+    VAR          go to state 42
+    L            go to state 43
+
+
+State 21
+
+   95 IF_STMT: T_IF $@17 . '(' COND ')' ':' SUITE $@18 ELIF_STMT
+
+    '('  shift, and go to state 44
+
+
+State 22
+
+  104 FOR_STMT: T_FOR $@22 . T_ID T_IN TARGET $@23 ':' SUITE
+
+    T_ID  shift, and go to state 45
+
+
+State 23
+
+   33 SIMPLE_STMT: T_INT '(' . A ')'
+
+    T_INPUT  shift, and go to state 46
+
+    A  go to state 47
+
+
+State 24
+
+   34 SIMPLE_STMT: T_LIST '(' . B ')'
+   35            | T_LIST '(' . A ')'
+
+    T_INPUT  shift, and go to state 10
+
+    A  go to state 48
+    B  go to state 49
+
+
+State 25
+
+   39 A: T_INPUT '(' . GI ')'
+   40 B: T_INPUT '(' . GI ')' '.' T_SPLIT '(' ')'
+
+    T_STRING  shift, and go to state 50
+
+    $default  reduce using rule 44 (GI)
+
+    GI  go to state 51
+
+
+State 26
+
+   36 SIMPLE_STMT: T_PRINT '(' . UI ')'
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    $default  reduce using rule 42 (UI)
+
+    UI   go to state 52
+    Q    go to state 53
+    VAR  go to state 42
+    L    go to state 43
+    M    go to state 54
+
+
+State 27
+
+    9 START: NEWLINE $@2 . START
+
+    error    shift, and go to state 4
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 6
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+    NEWLINE  shift, and go to state 12
+
+    $end  reduce using rule 10 (START)
+
+    START        go to state 55
+    SIMPLE_STMT  go to state 14
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 17
+    IF_STMT      go to state 18
+    FOR_STMT     go to state 19
+
+
+State 28
+
+    6 START: SIMPLE_STMT NEWLINE . START
+
+    error    shift, and go to state 4
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 6
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+    NEWLINE  shift, and go to state 12
+
+    $end  reduce using rule 10 (START)
+
+    START        go to state 56
+    SIMPLE_STMT  go to state 14
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 17
+    IF_STMT      go to state 18
+    FOR_STMT     go to state 19
+
+
+State 29
+
+    3 START: ASSIGN NEWLINE . START
+
+    error    shift, and go to state 4
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 6
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+    NEWLINE  shift, and go to state 12
+
+    $end  reduce using rule 10 (START)
+
+    START        go to state 57
+    SIMPLE_STMT  go to state 14
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 17
+    IF_STMT      go to state 18
+    FOR_STMT     go to state 19
+
+
+State 30
+
+    5 START: IF_STMT START .
+
+    $default  reduce using rule 5 (START)
+
+
+State 31
+
+    4 START: FOR_STMT START .
+
+    $default  reduce using rule 4 (START)
+
+
+State 32
+
+   58 VAR: T_ID .
+
+    $default  reduce using rule 58 (VAR)
+
+
+State 33
+
+   60 VAR: T_STRING .
+
+    $default  reduce using rule 60 (VAR)
+
+
+State 34
+
+   59 VAR: T_DIGIT .
+
+    $default  reduce using rule 59 (VAR)
+
+
+State 35
+
+   56 Q: '(' . E ')'
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    E    go to state 58
+    T    go to state 39
+    F    go to state 40
+    Q    go to state 41
+    VAR  go to state 42
+    L    go to state 43
+
+
+State 36
+
+   61 L: '[' . M ']'
+   62  | '[' . ']'
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+    ']'       shift, and go to state 59
+
+    Q    go to state 53
+    VAR  go to state 42
+    L    go to state 43
+    M    go to state 60
+
+
+State 37
+
+   46 ASSIGN: T_ID T_ASSIGN SIMPLE_STMT .
+
+    $default  reduce using rule 46 (ASSIGN)
+
+
+State 38
+
+   45 ASSIGN: T_ID T_ASSIGN E .
+   47 E: E . '+' T
+   48  | E . T_minus T
+
+    T_minus  shift, and go to state 61
+    '+'      shift, and go to state 62
+
+    $default  reduce using rule 45 (ASSIGN)
+
+
+State 39
+
+   49 E: T .
+   50 T: T . '*' F
+   51  | T . '/' F
+
+    '*'  shift, and go to state 63
+    '/'  shift, and go to state 64
+
+    $default  reduce using rule 49 (E)
+
+
+State 40
+
+   52 T: F .
+
+    $default  reduce using rule 52 (T)
+
+
+State 41
+
+   53 F: Q . T_star F
+   54  | Q .
+
+    T_star  shift, and go to state 65
+
+    $default  reduce using rule 54 (F)
+
+
+State 42
+
+   57 Q: VAR .
+
+    $default  reduce using rule 57 (Q)
+
+
+State 43
+
+   55 Q: L .
+
+    $default  reduce using rule 55 (Q)
+
+
+State 44
+
+   95 IF_STMT: T_IF $@17 '(' . COND ')' ':' SUITE $@18 ELIF_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    COND      go to state 72
+    AND_STMT  go to state 73
+    NOT_STMT  go to state 74
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 45
+
+  104 FOR_STMT: T_FOR $@22 T_ID . T_IN TARGET $@23 ':' SUITE
+
+    T_IN  shift, and go to state 77
+
+
+State 46
+
+   39 A: T_INPUT . '(' GI ')'
+
+    '('  shift, and go to state 78
+
+
+State 47
+
+   33 SIMPLE_STMT: T_INT '(' A . ')'
+
+    ')'  shift, and go to state 79
+
+
+State 48
+
+   35 SIMPLE_STMT: T_LIST '(' A . ')'
+
+    ')'  shift, and go to state 80
+
+
+State 49
+
+   34 SIMPLE_STMT: T_LIST '(' B . ')'
+
+    ')'  shift, and go to state 81
+
+
+State 50
+
+   43 GI: T_STRING .
+
+    $default  reduce using rule 43 (GI)
+
+
+State 51
+
+   39 A: T_INPUT '(' GI . ')'
+   40 B: T_INPUT '(' GI . ')' '.' T_SPLIT '(' ')'
+
+    ')'  shift, and go to state 82
+
+
+State 52
+
+   36 SIMPLE_STMT: T_PRINT '(' UI . ')'
+
+    ')'  shift, and go to state 83
+
+
+State 53
+
+   63 M: Q . ',' M
+   64  | Q .
+
+    ','  shift, and go to state 84
+
+    $default  reduce using rule 64 (M)
+
+
+State 54
+
+   41 UI: M .
+
+    $default  reduce using rule 41 (UI)
+
+
+State 55
+
+    9 START: NEWLINE $@2 START .
+
+    $default  reduce using rule 9 (START)
+
+
+State 56
+
+    6 START: SIMPLE_STMT NEWLINE START .
+
+    $default  reduce using rule 6 (START)
+
+
+State 57
+
+    3 START: ASSIGN NEWLINE START .
+
+    $default  reduce using rule 3 (START)
+
+
+State 58
+
+   47 E: E . '+' T
+   48  | E . T_minus T
+   56 Q: '(' E . ')'
+
+    T_minus  shift, and go to state 61
+    '+'      shift, and go to state 62
+    ')'      shift, and go to state 85
+
+
+State 59
+
+   62 L: '[' ']' .
+
+    $default  reduce using rule 62 (L)
+
+
+State 60
+
+   61 L: '[' M . ']'
+
+    ']'  shift, and go to state 86
+
+
+State 61
+
+   48 E: E T_minus . T
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    T    go to state 87
+    F    go to state 40
+    Q    go to state 41
+    VAR  go to state 42
+    L    go to state 43
+
+
+State 62
+
+   47 E: E '+' . T
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    T    go to state 88
+    F    go to state 40
+    Q    go to state 41
+    VAR  go to state 42
+    L    go to state 43
+
+
+State 63
+
+   50 T: T '*' . F
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    F    go to state 89
+    Q    go to state 41
+    VAR  go to state 42
+    L    go to state 43
+
+
+State 64
+
+   51 T: T '/' . F
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    F    go to state 90
+    Q    go to state 41
+    VAR  go to state 42
+    L    go to state 43
+
+
+State 65
+
+   53 F: Q T_star . F
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    F    go to state 91
+    Q    go to state 41
+    VAR  go to state 42
+    L    go to state 43
+
+
+State 66
+
+   80 N: T_TRUE .
+
+    $default  reduce using rule 80 (N)
+
+
+State 67
+
+   81 N: T_FALSE .
+
+    $default  reduce using rule 81 (N)
+
+
+State 68
+
+   76 NOT_STMT: T_NOT . NOT_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    NOT_STMT  go to state 92
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 69
+
+   78 N: '(' . COND ')'
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    COND      go to state 93
+    AND_STMT  go to state 73
+    NOT_STMT  go to state 74
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 70
+
+   82 REL_EXP: VAR . REL_OP VAR
+   84        | VAR . LIST_OP L
+
+    T_LT   shift, and go to state 94
+    T_GT   shift, and go to state 95
+    T_GE   shift, and go to state 96
+    T_LE   shift, and go to state 97
+    T_EEQ  shift, and go to state 98
+    T_NEQ  shift, and go to state 99
+
+    REL_OP   go to state 100
+    LIST_OP  go to state 101
+
+
+State 71
+
+   83 REL_EXP: L . LIST_OP L
+   85        | L . LIST_OP VAR
+
+    T_EEQ  shift, and go to state 98
+    T_NEQ  shift, and go to state 99
+
+    LIST_OP  go to state 102
+
+
+State 72
+
+   72 COND: COND . T_OR AND_STMT
+   95 IF_STMT: T_IF $@17 '(' COND . ')' ':' SUITE $@18 ELIF_STMT
+
+    T_OR  shift, and go to state 103
+    ')'   shift, and go to state 104
+
+
+State 73
+
+   73 COND: AND_STMT .
+   74 AND_STMT: AND_STMT . T_AND NOT_STMT
+
+    T_AND  shift, and go to state 105
+
+    $default  reduce using rule 73 (COND)
+
+
+State 74
+
+   75 AND_STMT: NOT_STMT .
+
+    $default  reduce using rule 75 (AND_STMT)
+
+
+State 75
+
+   77 NOT_STMT: N .
+
+    $default  reduce using rule 77 (NOT_STMT)
+
+
+State 76
+
+   79 N: REL_EXP .
+
+    $default  reduce using rule 79 (N)
+
+
+State 77
+
+  104 FOR_STMT: T_FOR $@22 T_ID T_IN . TARGET $@23 ':' SUITE
+
+    T_ID     shift, and go to state 106
+    T_RANGE  shift, and go to state 107
+    '['      shift, and go to state 36
+
+    L       go to state 108
+    TARGET  go to state 109
+
+
+State 78
+
+   39 A: T_INPUT '(' . GI ')'
+
+    T_STRING  shift, and go to state 50
+
+    $default  reduce using rule 44 (GI)
+
+    GI  go to state 110
+
+
+State 79
+
+   33 SIMPLE_STMT: T_INT '(' A ')' .
+
+    $default  reduce using rule 33 (SIMPLE_STMT)
+
+
+State 80
+
+   35 SIMPLE_STMT: T_LIST '(' A ')' .
+
+    $default  reduce using rule 35 (SIMPLE_STMT)
+
+
+State 81
+
+   34 SIMPLE_STMT: T_LIST '(' B ')' .
+
+    $default  reduce using rule 34 (SIMPLE_STMT)
+
+
+State 82
+
+   39 A: T_INPUT '(' GI ')' .
+   40 B: T_INPUT '(' GI ')' . '.' T_SPLIT '(' ')'
+
+    '.'  shift, and go to state 111
+
+    $default  reduce using rule 39 (A)
+
+
+State 83
+
+   36 SIMPLE_STMT: T_PRINT '(' UI ')' .
+
+    $default  reduce using rule 36 (SIMPLE_STMT)
+
+
+State 84
+
+   63 M: Q ',' . M
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '('       shift, and go to state 35
+    '['       shift, and go to state 36
+
+    Q    go to state 53
+    VAR  go to state 42
+    L    go to state 43
+    M    go to state 112
+
+
+State 85
+
+   56 Q: '(' E ')' .
+
+    $default  reduce using rule 56 (Q)
+
+
+State 86
+
+   61 L: '[' M ']' .
+
+    $default  reduce using rule 61 (L)
+
+
+State 87
+
+   48 E: E T_minus T .
+   50 T: T . '*' F
+   51  | T . '/' F
+
+    '*'  shift, and go to state 63
+    '/'  shift, and go to state 64
+
+    $default  reduce using rule 48 (E)
+
+
+State 88
+
+   47 E: E '+' T .
+   50 T: T . '*' F
+   51  | T . '/' F
+
+    '*'  shift, and go to state 63
+    '/'  shift, and go to state 64
+
+    $default  reduce using rule 47 (E)
+
+
+State 89
+
+   50 T: T '*' F .
+
+    $default  reduce using rule 50 (T)
+
+
+State 90
+
+   51 T: T '/' F .
+
+    $default  reduce using rule 51 (T)
+
+
+State 91
+
+   53 F: Q T_star F .
+
+    $default  reduce using rule 53 (F)
+
+
+State 92
+
+   76 NOT_STMT: T_NOT NOT_STMT .
+
+    $default  reduce using rule 76 (NOT_STMT)
+
+
+State 93
+
+   72 COND: COND . T_OR AND_STMT
+   78 N: '(' COND . ')'
+
+    T_OR  shift, and go to state 103
+    ')'   shift, and go to state 113
+
+
+State 94
+
+   65 REL_OP: T_LT .
+
+    $default  reduce using rule 65 (REL_OP)
+
+
+State 95
+
+   66 REL_OP: T_GT .
+
+    $default  reduce using rule 66 (REL_OP)
+
+
+State 96
+
+   67 REL_OP: T_GE .
+
+    $default  reduce using rule 67 (REL_OP)
+
+
+State 97
+
+   68 REL_OP: T_LE .
+
+    $default  reduce using rule 68 (REL_OP)
+
+
+State 98
+
+   70 LIST_OP: T_EEQ .
+
+    $default  reduce using rule 70 (LIST_OP)
+
+
+State 99
+
+   71 LIST_OP: T_NEQ .
+
+    $default  reduce using rule 71 (LIST_OP)
+
+
+State 100
+
+   82 REL_EXP: VAR REL_OP . VAR
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+
+    VAR  go to state 114
+
+
+State 101
+
+   69 REL_OP: LIST_OP .
+   84 REL_EXP: VAR LIST_OP . L
+
+    '['  shift, and go to state 36
+
+    $default  reduce using rule 69 (REL_OP)
+
+    L  go to state 115
+
+
+State 102
+
+   83 REL_EXP: L LIST_OP . L
+   85        | L LIST_OP . VAR
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    '['       shift, and go to state 36
+
+    VAR  go to state 116
+    L    go to state 117
+
+
+State 103
+
+   72 COND: COND T_OR . AND_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    AND_STMT  go to state 118
+    NOT_STMT  go to state 74
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 104
+
+   95 IF_STMT: T_IF $@17 '(' COND ')' . ':' SUITE $@18 ELIF_STMT
+
+    ':'  shift, and go to state 119
+
+
+State 105
+
+   74 AND_STMT: AND_STMT T_AND . NOT_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    NOT_STMT  go to state 120
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 106
+
+  108 TARGET: T_ID .
+
+    $default  reduce using rule 108 (TARGET)
+
+
+State 107
+
+  105 TARGET: T_RANGE . '(' C ')'
+  106       | T_RANGE . '(' C ',' C ')'
+  107       | T_RANGE . '(' C ',' C ',' C ')'
+
+    '('  shift, and go to state 121
+
+
+State 108
+
+  109 TARGET: L .
+
+    $default  reduce using rule 109 (TARGET)
+
+
+State 109
+
+  104 FOR_STMT: T_FOR $@22 T_ID T_IN TARGET . $@23 ':' SUITE
+
+    $default  reduce using rule 103 ($@23)
+
+    $@23  go to state 122
+
+
+State 110
+
+   39 A: T_INPUT '(' GI . ')'
+
+    ')'  shift, and go to state 123
+
+
+State 111
+
+   40 B: T_INPUT '(' GI ')' '.' . T_SPLIT '(' ')'
+
+    T_SPLIT  shift, and go to state 124
+
+
+State 112
+
+   63 M: Q ',' M .
+
+    $default  reduce using rule 63 (M)
+
+
+State 113
+
+   78 N: '(' COND ')' .
+
+    $default  reduce using rule 78 (N)
+
+
+State 114
+
+   82 REL_EXP: VAR REL_OP VAR .
+
+    $default  reduce using rule 82 (REL_EXP)
+
+
+State 115
+
+   84 REL_EXP: VAR LIST_OP L .
+
+    $default  reduce using rule 84 (REL_EXP)
+
+
+State 116
+
+   85 REL_EXP: L LIST_OP VAR .
+
+    $default  reduce using rule 85 (REL_EXP)
+
+
+State 117
+
+   83 REL_EXP: L LIST_OP L .
+
+    $default  reduce using rule 83 (REL_EXP)
+
+
+State 118
+
+   72 COND: COND T_OR AND_STMT .
+   74 AND_STMT: AND_STMT . T_AND NOT_STMT
+
+    T_AND  shift, and go to state 105
+
+    $default  reduce using rule 72 (COND)
+
+
+State 119
+
+   95 IF_STMT: T_IF $@17 '(' COND ')' ':' . SUITE $@18 ELIF_STMT
+
+    NEWLINE  shift, and go to state 125
+
+    SUITE  go to state 126
+
+
+State 120
+
+   74 AND_STMT: AND_STMT T_AND NOT_STMT .
+
+    $default  reduce using rule 74 (AND_STMT)
+
+
+State 121
+
+  105 TARGET: T_RANGE '(' . C ')'
+  106       | T_RANGE '(' . C ',' C ')'
+  107       | T_RANGE '(' . C ',' C ',' C ')'
+
+    T_ID     shift, and go to state 127
+    T_DIGIT  shift, and go to state 128
+
+    C  go to state 129
+
+
+State 122
+
+  104 FOR_STMT: T_FOR $@22 T_ID T_IN TARGET $@23 . ':' SUITE
+
+    ':'  shift, and go to state 130
+
+
+State 123
+
+   39 A: T_INPUT '(' GI ')' .
+
+    $default  reduce using rule 39 (A)
+
+
+State 124
+
+   40 B: T_INPUT '(' GI ')' '.' T_SPLIT . '(' ')'
+
+    '('  shift, and go to state 131
+
+
+State 125
+
+   92 SUITE: NEWLINE . $@16 INTERMEDIATE
+
+    $default  reduce using rule 91 ($@16)
+
+    $@16  go to state 132
+
+
+State 126
+
+   95 IF_STMT: T_IF $@17 '(' COND ')' ':' SUITE . $@18 ELIF_STMT
+
+    $default  reduce using rule 94 ($@18)
+
+    $@18  go to state 133
+
+
+State 127
+
+  110 C: T_ID .
+
+    $default  reduce using rule 110 (C)
+
+
+State 128
+
+  111 C: T_DIGIT .
+
+    $default  reduce using rule 111 (C)
+
+
+State 129
+
+  105 TARGET: T_RANGE '(' C . ')'
+  106       | T_RANGE '(' C . ',' C ')'
+  107       | T_RANGE '(' C . ',' C ',' C ')'
+
+    ')'  shift, and go to state 134
+    ','  shift, and go to state 135
+
+
+State 130
+
+  104 FOR_STMT: T_FOR $@22 T_ID T_IN TARGET $@23 ':' . SUITE
+
+    NEWLINE  shift, and go to state 125
+
+    SUITE  go to state 136
+
+
+State 131
+
+   40 B: T_INPUT '(' GI ')' '.' T_SPLIT '(' . ')'
+
+    ')'  shift, and go to state 137
+
+
+State 132
+
+   92 SUITE: NEWLINE $@16 . INTERMEDIATE
+
+    T_INDENT  shift, and go to state 138
+
+    INTERMEDIATE    go to state 139
+    INDENT_GRAMMER  go to state 140
+
+
+State 133
+
+   95 IF_STMT: T_IF $@17 '(' COND ')' ':' SUITE $@18 . ELIF_STMT
+
+    T_ELSE  shift, and go to state 141
+    T_ELIF  shift, and go to state 142
+
+    $default  reduce using rule 101 (ELIF_STMT)
+
+    ELIF_STMT  go to state 143
+
+
+State 134
+
+  105 TARGET: T_RANGE '(' C ')' .
+
+    $default  reduce using rule 105 (TARGET)
+
+
+State 135
+
+  106 TARGET: T_RANGE '(' C ',' . C ')'
+  107       | T_RANGE '(' C ',' . C ',' C ')'
+
+    T_ID     shift, and go to state 127
+    T_DIGIT  shift, and go to state 128
+
+    C  go to state 144
+
+
+State 136
+
+  104 FOR_STMT: T_FOR $@22 T_ID T_IN TARGET $@23 ':' SUITE .
+
+    $default  reduce using rule 104 (FOR_STMT)
+
+
+State 137
+
+   40 B: T_INPUT '(' GI ')' '.' T_SPLIT '(' ')' .
+
+    $default  reduce using rule 40 (B)
+
+
+State 138
+
+   29 INDENT_GRAMMER: T_INDENT . $@11 GOP
+
+    $default  reduce using rule 28 ($@11)
+
+    $@11  go to state 145
+
+
+State 139
+
+   92 SUITE: NEWLINE $@16 INTERMEDIATE .
+
+    $default  reduce using rule 92 (SUITE)
+
+
+State 140
+
+   21 INTERMEDIATE: INDENT_GRAMMER . ASSIGN NEWLINE $@7 START_FOR_INDENT
+   23             | INDENT_GRAMMER . FOR_STMT NEWLINE $@8 START_FOR_INDENT
+   25             | INDENT_GRAMMER . INNER_IF NEWLINE $@9 START_FOR_INDENT
+   27             | INDENT_GRAMMER . SIMPLE_STMT NEWLINE $@10 START_FOR_INDENT
+
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 146
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+
+    SIMPLE_STMT  go to state 147
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 148
+    INNER_IF     go to state 149
+    FOR_STMT     go to state 150
+
+
+State 141
+
+  100 ELIF_STMT: T_ELSE . $@21 ':' SUITE
+
+    $default  reduce using rule 99 ($@21)
+
+    $@21  go to state 151
+
+
+State 142
+
+   98 ELIF_STMT: T_ELIF . $@19 '(' COND ')' ':' SUITE $@20 ELIF_STMT
+
+    $default  reduce using rule 96 ($@19)
+
+    $@19  go to state 152
+
+
+State 143
+
+   95 IF_STMT: T_IF $@17 '(' COND ')' ':' SUITE $@18 ELIF_STMT .
+
+    $default  reduce using rule 95 (IF_STMT)
+
+
+State 144
+
+  106 TARGET: T_RANGE '(' C ',' C . ')'
+  107       | T_RANGE '(' C ',' C . ',' C ')'
+
+    ')'  shift, and go to state 153
+    ','  shift, and go to state 154
+
+
+State 145
+
+   29 INDENT_GRAMMER: T_INDENT $@11 . GOP
+
+    T_INDENT  shift, and go to state 155
+
+    $default  reduce using rule 32 (GOP)
+
+    GOP  go to state 156
+
+
+State 146
+
+   90 INNER_IF: T_IF . $@14 '(' COND ')' ':' NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+    $default  reduce using rule 88 ($@14)
+
+    $@14  go to state 157
+
+
+State 147
+
+   27 INTERMEDIATE: INDENT_GRAMMER SIMPLE_STMT . NEWLINE $@10 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 158
+
+
+State 148
+
+   21 INTERMEDIATE: INDENT_GRAMMER ASSIGN . NEWLINE $@7 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 159
+
+
+State 149
+
+   25 INTERMEDIATE: INDENT_GRAMMER INNER_IF . NEWLINE $@9 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 160
+
+
+State 150
+
+   23 INTERMEDIATE: INDENT_GRAMMER FOR_STMT . NEWLINE $@8 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 161
+
+
+State 151
+
+  100 ELIF_STMT: T_ELSE $@21 . ':' SUITE
+
+    ':'  shift, and go to state 162
+
+
+State 152
+
+   98 ELIF_STMT: T_ELIF $@19 . '(' COND ')' ':' SUITE $@20 ELIF_STMT
+
+    '('  shift, and go to state 163
+
+
+State 153
+
+  106 TARGET: T_RANGE '(' C ',' C ')' .
+
+    $default  reduce using rule 106 (TARGET)
+
+
+State 154
+
+  107 TARGET: T_RANGE '(' C ',' C ',' . C ')'
+
+    T_ID     shift, and go to state 127
+    T_DIGIT  shift, and go to state 128
+
+    C  go to state 164
+
+
+State 155
+
+   31 GOP: T_INDENT . $@12 GOP
+
+    $default  reduce using rule 30 ($@12)
+
+    $@12  go to state 165
+
+
+State 156
+
+   29 INDENT_GRAMMER: T_INDENT $@11 GOP .
+
+    $default  reduce using rule 29 (INDENT_GRAMMER)
+
+
+State 157
+
+   90 INNER_IF: T_IF $@14 . '(' COND ')' ':' NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+    '('  shift, and go to state 166
+
+
+State 158
+
+   27 INTERMEDIATE: INDENT_GRAMMER SIMPLE_STMT NEWLINE . $@10 START_FOR_INDENT
+
+    $default  reduce using rule 26 ($@10)
+
+    $@10  go to state 167
+
+
+State 159
+
+   21 INTERMEDIATE: INDENT_GRAMMER ASSIGN NEWLINE . $@7 START_FOR_INDENT
+
+    $default  reduce using rule 20 ($@7)
+
+    $@7  go to state 168
+
+
+State 160
+
+   25 INTERMEDIATE: INDENT_GRAMMER INNER_IF NEWLINE . $@9 START_FOR_INDENT
+
+    $default  reduce using rule 24 ($@9)
+
+    $@9  go to state 169
+
+
+State 161
+
+   23 INTERMEDIATE: INDENT_GRAMMER FOR_STMT NEWLINE . $@8 START_FOR_INDENT
+
+    $default  reduce using rule 22 ($@8)
+
+    $@8  go to state 170
+
+
+State 162
+
+  100 ELIF_STMT: T_ELSE $@21 ':' . SUITE
+
+    NEWLINE  shift, and go to state 125
+
+    SUITE  go to state 171
+
+
+State 163
+
+   98 ELIF_STMT: T_ELIF $@19 '(' . COND ')' ':' SUITE $@20 ELIF_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    COND      go to state 172
+    AND_STMT  go to state 73
+    NOT_STMT  go to state 74
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 164
+
+  107 TARGET: T_RANGE '(' C ',' C ',' C . ')'
+
+    ')'  shift, and go to state 173
+
+
+State 165
+
+   31 GOP: T_INDENT $@12 . GOP
+
+    T_INDENT  shift, and go to state 155
+
+    $default  reduce using rule 32 (GOP)
+
+    GOP  go to state 174
+
+
+State 166
+
+   90 INNER_IF: T_IF $@14 '(' . COND ')' ':' NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+    T_ID      shift, and go to state 32
+    T_STRING  shift, and go to state 33
+    T_DIGIT   shift, and go to state 34
+    T_TRUE    shift, and go to state 66
+    T_FALSE   shift, and go to state 67
+    T_NOT     shift, and go to state 68
+    '('       shift, and go to state 69
+    '['       shift, and go to state 36
+
+    VAR       go to state 70
+    L         go to state 71
+    COND      go to state 175
+    AND_STMT  go to state 73
+    NOT_STMT  go to state 74
+    N         go to state 75
+    REL_EXP   go to state 76
+
+
+State 167
+
+   27 INTERMEDIATE: INDENT_GRAMMER SIMPLE_STMT NEWLINE $@10 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 176
+    INDENT_GRAMMER    go to state 177
+
+
+State 168
+
+   21 INTERMEDIATE: INDENT_GRAMMER ASSIGN NEWLINE $@7 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 178
+    INDENT_GRAMMER    go to state 177
+
+
+State 169
+
+   25 INTERMEDIATE: INDENT_GRAMMER INNER_IF NEWLINE $@9 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 179
+    INDENT_GRAMMER    go to state 177
+
+
+State 170
+
+   23 INTERMEDIATE: INDENT_GRAMMER FOR_STMT NEWLINE $@8 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 180
+    INDENT_GRAMMER    go to state 177
+
+
+State 171
+
+  100 ELIF_STMT: T_ELSE $@21 ':' SUITE .
+
+    $default  reduce using rule 100 (ELIF_STMT)
+
+
+State 172
+
+   72 COND: COND . T_OR AND_STMT
+   98 ELIF_STMT: T_ELIF $@19 '(' COND . ')' ':' SUITE $@20 ELIF_STMT
+
+    T_OR  shift, and go to state 103
+    ')'   shift, and go to state 181
+
+
+State 173
+
+  107 TARGET: T_RANGE '(' C ',' C ',' C ')' .
+
+    $default  reduce using rule 107 (TARGET)
+
+
+State 174
+
+   31 GOP: T_INDENT $@12 GOP .
+
+    $default  reduce using rule 31 (GOP)
+
+
+State 175
+
+   72 COND: COND . T_OR AND_STMT
+   90 INNER_IF: T_IF $@14 '(' COND . ')' ':' NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+    T_OR  shift, and go to state 103
+    ')'   shift, and go to state 182
+
+
+State 176
+
+   27 INTERMEDIATE: INDENT_GRAMMER SIMPLE_STMT NEWLINE $@10 START_FOR_INDENT .
+
+    $default  reduce using rule 27 (INTERMEDIATE)
+
+
+State 177
+
+   12 START_FOR_INDENT: INDENT_GRAMMER . ASSIGN NEWLINE $@3 START_FOR_INDENT
+   14                 | INDENT_GRAMMER . FOR_STMT NEWLINE $@4 START_FOR_INDENT
+   16                 | INDENT_GRAMMER . INNER_IF NEWLINE $@5 START_FOR_INDENT
+   18                 | INDENT_GRAMMER . SIMPLE_STMT NEWLINE $@6 START_FOR_INDENT
+
+    T_ID     shift, and go to state 5
+    T_IF     shift, and go to state 146
+    T_FOR    shift, and go to state 7
+    T_INT    shift, and go to state 8
+    T_LIST   shift, and go to state 9
+    T_INPUT  shift, and go to state 10
+    T_PRINT  shift, and go to state 11
+
+    SIMPLE_STMT  go to state 183
+    A            go to state 15
+    B            go to state 16
+    ASSIGN       go to state 184
+    INNER_IF     go to state 185
+    FOR_STMT     go to state 186
+
+
+State 178
+
+   21 INTERMEDIATE: INDENT_GRAMMER ASSIGN NEWLINE $@7 START_FOR_INDENT .
+
+    $default  reduce using rule 21 (INTERMEDIATE)
+
+
+State 179
+
+   25 INTERMEDIATE: INDENT_GRAMMER INNER_IF NEWLINE $@9 START_FOR_INDENT .
+
+    $default  reduce using rule 25 (INTERMEDIATE)
+
+
+State 180
+
+   23 INTERMEDIATE: INDENT_GRAMMER FOR_STMT NEWLINE $@8 START_FOR_INDENT .
+
+    $default  reduce using rule 23 (INTERMEDIATE)
+
+
+State 181
+
+   98 ELIF_STMT: T_ELIF $@19 '(' COND ')' . ':' SUITE $@20 ELIF_STMT
+
+    ':'  shift, and go to state 187
+
+
+State 182
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' . ':' NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+    ':'  shift, and go to state 188
+
+
+State 183
+
+   18 START_FOR_INDENT: INDENT_GRAMMER SIMPLE_STMT . NEWLINE $@6 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 189
+
+
+State 184
+
+   12 START_FOR_INDENT: INDENT_GRAMMER ASSIGN . NEWLINE $@3 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 190
+
+
+State 185
+
+   16 START_FOR_INDENT: INDENT_GRAMMER INNER_IF . NEWLINE $@5 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 191
+
+
+State 186
+
+   14 START_FOR_INDENT: INDENT_GRAMMER FOR_STMT . NEWLINE $@4 START_FOR_INDENT
+
+    NEWLINE  shift, and go to state 192
+
+
+State 187
+
+   98 ELIF_STMT: T_ELIF $@19 '(' COND ')' ':' . SUITE $@20 ELIF_STMT
+
+    NEWLINE  shift, and go to state 125
+
+    SUITE  go to state 193
+
+
+State 188
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' ':' . NEWLINE INNER_SUITE $@15 ELIF_STMT
+
+    NEWLINE  shift, and go to state 194
+
+
+State 189
+
+   18 START_FOR_INDENT: INDENT_GRAMMER SIMPLE_STMT NEWLINE . $@6 START_FOR_INDENT
+
+    $default  reduce using rule 17 ($@6)
+
+    $@6  go to state 195
+
+
+State 190
+
+   12 START_FOR_INDENT: INDENT_GRAMMER ASSIGN NEWLINE . $@3 START_FOR_INDENT
+
+    $default  reduce using rule 11 ($@3)
+
+    $@3  go to state 196
+
+
+State 191
+
+   16 START_FOR_INDENT: INDENT_GRAMMER INNER_IF NEWLINE . $@5 START_FOR_INDENT
+
+    $default  reduce using rule 15 ($@5)
+
+    $@5  go to state 197
+
+
+State 192
+
+   14 START_FOR_INDENT: INDENT_GRAMMER FOR_STMT NEWLINE . $@4 START_FOR_INDENT
+
+    $default  reduce using rule 13 ($@4)
+
+    $@4  go to state 198
+
+
+State 193
+
+   98 ELIF_STMT: T_ELIF $@19 '(' COND ')' ':' SUITE . $@20 ELIF_STMT
+
+    $default  reduce using rule 97 ($@20)
+
+    $@20  go to state 199
+
+
+State 194
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' ':' NEWLINE . INNER_SUITE $@15 ELIF_STMT
+
+    $default  reduce using rule 86 ($@13)
+
+    INNER_SUITE  go to state 200
+    $@13         go to state 201
+
+
+State 195
+
+   18 START_FOR_INDENT: INDENT_GRAMMER SIMPLE_STMT NEWLINE $@6 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 202
+    INDENT_GRAMMER    go to state 177
+
+
+State 196
+
+   12 START_FOR_INDENT: INDENT_GRAMMER ASSIGN NEWLINE $@3 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 203
+    INDENT_GRAMMER    go to state 177
+
+
+State 197
+
+   16 START_FOR_INDENT: INDENT_GRAMMER INNER_IF NEWLINE $@5 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 204
+    INDENT_GRAMMER    go to state 177
+
+
+State 198
+
+   14 START_FOR_INDENT: INDENT_GRAMMER FOR_STMT NEWLINE $@4 . START_FOR_INDENT
+
+    T_INDENT  shift, and go to state 138
+
+    $default  reduce using rule 19 (START_FOR_INDENT)
+
+    START_FOR_INDENT  go to state 205
+    INDENT_GRAMMER    go to state 177
+
+
+State 199
+
+   98 ELIF_STMT: T_ELIF $@19 '(' COND ')' ':' SUITE $@20 . ELIF_STMT
+
+    T_ELSE  shift, and go to state 141
+    T_ELIF  shift, and go to state 142
+
+    $default  reduce using rule 101 (ELIF_STMT)
+
+    ELIF_STMT  go to state 206
+
+
+State 200
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' ':' NEWLINE INNER_SUITE . $@15 ELIF_STMT
+
+    $default  reduce using rule 89 ($@15)
+
+    $@15  go to state 207
+
+
+State 201
+
+   87 INNER_SUITE: $@13 . INTERMEDIATE
+
+    T_INDENT  shift, and go to state 138
+
+    INTERMEDIATE    go to state 208
+    INDENT_GRAMMER  go to state 140
+
+
+State 202
+
+   18 START_FOR_INDENT: INDENT_GRAMMER SIMPLE_STMT NEWLINE $@6 START_FOR_INDENT .
+
+    $default  reduce using rule 18 (START_FOR_INDENT)
+
+
+State 203
+
+   12 START_FOR_INDENT: INDENT_GRAMMER ASSIGN NEWLINE $@3 START_FOR_INDENT .
+
+    $default  reduce using rule 12 (START_FOR_INDENT)
+
+
+State 204
+
+   16 START_FOR_INDENT: INDENT_GRAMMER INNER_IF NEWLINE $@5 START_FOR_INDENT .
+
+    $default  reduce using rule 16 (START_FOR_INDENT)
+
+
+State 205
+
+   14 START_FOR_INDENT: INDENT_GRAMMER FOR_STMT NEWLINE $@4 START_FOR_INDENT .
+
+    $default  reduce using rule 14 (START_FOR_INDENT)
+
+
+State 206
+
+   98 ELIF_STMT: T_ELIF $@19 '(' COND ')' ':' SUITE $@20 ELIF_STMT .
+
+    $default  reduce using rule 98 (ELIF_STMT)
+
+
+State 207
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' ':' NEWLINE INNER_SUITE $@15 . ELIF_STMT
+
+    T_ELSE  shift, and go to state 141
+    T_ELIF  shift, and go to state 142
+
+    $default  reduce using rule 101 (ELIF_STMT)
+
+    ELIF_STMT  go to state 209
+
+
+State 208
+
+   87 INNER_SUITE: $@13 INTERMEDIATE .
+
+    $default  reduce using rule 87 (INNER_SUITE)
+
+
+State 209
+
+   90 INNER_IF: T_IF $@14 '(' COND ')' ':' NEWLINE INNER_SUITE $@15 ELIF_STMT .
+
+    $default  reduce using rule 90 (INNER_IF)
